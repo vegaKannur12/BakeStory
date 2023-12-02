@@ -129,7 +129,7 @@ class _DrawerPageState extends State<DrawerPage> {
                                 ),
                                 trailing: SizedBox(
                                     height: 35,
-                                    width: 40,
+                                    width: 35,
                                     child: drawer_list[index].icon),
                               ),
                               onTap: () {

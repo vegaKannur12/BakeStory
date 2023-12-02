@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import "package:collection/collection.dart";
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_to_hex/string_to_hex.dart';
@@ -578,6 +579,7 @@ class Controller extends ChangeNotifier {
             var e = {
               "flg": d["flg"].toString(),
               "p_name": d["p_name"].toString(),
+              "remarks": d["remarks"].toString(),
               "product_id": d["product_id"].toString(),
               "c_name": d["c_name"].toString(),
               "qty": d["qty"].toString(),
@@ -616,6 +618,7 @@ class Controller extends ChangeNotifier {
 
   getProlossReport(
       BuildContext context, String formattedDate, String cid) async {
+        Size size=MediaQuery.of(context).size;
     NetConnection.networkConnection(context).then((value) async {
       if (value == true) {
         try {
@@ -639,7 +642,7 @@ class Controller extends ChangeNotifier {
           for (var item in map["data"]) {
             monthlyprodReportlist.add(item);
           }
-          monthlyReportList(monthlyprodReportlist);
+          monthlyReportList(monthlyprodReportlist,size);
           isMonthreportLoading = false;
           notifyListeners();
           print("Monthlylist map-----$map");
@@ -653,21 +656,25 @@ class Controller extends ChangeNotifier {
   }
 
   //////////////////////////////////////////////
-  monthlyReportList(List<Map<String, dynamic>> monthlylist) {
+  monthlyReportList(List<Map<String, dynamic>> monthlylist,Size size) {
     monthReportWidget.clear();
     print("Monthly data[]....$monthlylist");
     isEMPreportLoading = true;
 
     notifyListeners();
     if (monthlylist.length == 0) {
-      monthReportWidget.add(Padding(
-          padding: EdgeInsets.only(top: 150),
-          child: Image.asset(
-            "assets/folder.png",
-            height: 80,
-            width: 60,
-          )));
-    } else {
+      monthReportWidget.add(Container(
+        height: size.height * 0.6,
+        child: Center(
+          child: Lottie.asset(
+            "assets/nodata.json",
+            height: 100,
+          ),
+        ),
+      ));
+    } 
+    else 
+    {
       int i = 0;
       monthReportWidget.add(
         SingleChildScrollView(
@@ -782,7 +789,7 @@ class Controller extends ChangeNotifier {
   getEmployeeReport(BuildContext context, String cid) async {
     var employeeresultList = <String, List<Map<String, dynamic>>>{};
     // var grandtotlist = [];
-
+Size size=MediaQuery.of(context).size;
     NetConnection.networkConnection(context).then((value) async {
       if (value == true) {
         try {
@@ -807,7 +814,7 @@ class Controller extends ChangeNotifier {
           for (var item in map["data"]) {
             employeeReportlist.add(item);
           }
-          employeeReportWidget(employeeReportlist);
+          employeeReportWidget(employeeReportlist,size);
           isEMPreportLoading = false;
           notifyListeners();
         } catch (e) {
@@ -819,17 +826,19 @@ class Controller extends ChangeNotifier {
     });
   }
 
-  employeeReportWidget(List<Map<String, dynamic>> emplist) {
+  employeeReportWidget(List<Map<String, dynamic>> emplist,Size size) {
     proReportWidget.clear();
 
     if (emplist.length == 0) {
-      proReportWidget.add(Padding(
-          padding: EdgeInsets.only(top: 150),
-          child: Image.asset(
-            "assets/folder.png",
-            height: 80,
-            width: 60,
-          )));
+      proReportWidget.add(Container(
+        height: size.height * 0.6,
+        child: Center(
+          child: Lottie.asset(
+            "assets/nodata.json",
+            height: 100,
+          ),
+        ),
+      ));
     } else {
       int i = 0;
       proReportWidget.add(

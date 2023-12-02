@@ -27,6 +27,7 @@ class _EmployReportState extends State<EmployReport> {
 
   @override
   Widget build(BuildContext context) {
+     Size size = MediaQuery.of(context).size;
     return MyScaffold(
         hasDrawer: true,
         scBgColor: Color.fromARGB(255, 250, 223, 205),
@@ -75,14 +76,13 @@ class _EmployReportState extends State<EmployReport> {
                 height: 20,
               ),
               value.isEMPreportLoading
-                  ? Padding(
-                      padding: EdgeInsets.only(top: 70),
-                      child: SpinKitDualRing(
-                        color: Colors.blue,
-                        lineWidth: 5.0,
-                        size: 40,
-                        duration: Duration(minutes: 5),
-                      ))
+                  ? SizedBox(
+                    height: size.height * 0.6,
+                    child: SpinKitFadingCircle(
+                      color: Colors.black,
+                      duration: Duration(minutes: 10),
+                    ),
+                  )
                   : Expanded(
                       child: ListView.builder(
                           itemCount: value.proReportWidget.length,

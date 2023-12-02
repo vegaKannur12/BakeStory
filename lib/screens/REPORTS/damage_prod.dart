@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class DamageProd extends StatefulWidget {
@@ -30,6 +31,7 @@ class _DamageProdState extends State<DamageProd> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return MyScaffold(
       hasDrawer: true,
       scBgColor: Color.fromARGB(255, 250, 223, 205),
@@ -63,11 +65,11 @@ class _DamageProdState extends State<DamageProd> {
                       controller: dateInput,
                       //editing controller of this TextField
                       decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 5, bottom: 5),
-                          icon: Icon(Icons.calendar_today), //icon of text field
-                          //label text of field
-                          ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 5),
+                        icon: Icon(Icons.calendar_today), //icon of text field
+                        //label text of field
+                      ),
                       readOnly: true,
                       //set it true, so that user will not able to edit text
                       onTap: () async {
@@ -143,19 +145,23 @@ class _DamageProdState extends State<DamageProd> {
               height: 20,
             ),
             value.isDamageLoding
-                ? Padding(
-                    padding: EdgeInsets.only(top: 70),
-                    child: SpinKitDualRing(
-                      color: Colors.blue,
-                      lineWidth: 5.0,
-                      size: 40,
-                      duration: Duration(minutes: 5),
-                    ))
+                ? SizedBox(
+                    height: size.height * 0.6,
+                    child: SpinKitFadingCircle(
+                      color: Colors.black,
+                      duration: Duration(minutes: 10),
+                    ),
+                  )
                 : value.list1.length == 0
-                    ? Padding(
-                      
-                        padding: EdgeInsets.only(top: 150),
-                        child: Image.asset("assets/folder.png",height: 80,width: 60,))
+                    ? Container(
+                        height: size.height * 0.6,
+                        child: Center(
+                          child: Lottie.asset(
+                            "assets/nodata.json",
+                            height: 100,
+                          ),
+                        ),
+                      )
                     : Expanded(
                         child: ListView.builder(
                             // physics: NeverScrollableScrollPhysics(),
@@ -188,10 +194,8 @@ class _DamageProdState extends State<DamageProd> {
 
                               return Column(
                                 children: [
-                                  
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       const SizedBox(
                                         width: 10,
@@ -207,18 +211,19 @@ class _DamageProdState extends State<DamageProd> {
                                       ),
                                     ],
                                   ),
-                                   SizedBox(
+                                  SizedBox(
                                     height: 10,
                                   ),
                                   SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: DataTable(
                                       columnSpacing: 20,
-                                      headingTextStyle: GoogleFonts.ptSerif(color: Colors.white),
+                                      headingTextStyle: GoogleFonts.ptSerif(
+                                          color: Colors.white),
                                       headingRowHeight: 45,
-                                       headingRowColor:
-                                                    MaterialStateColor.resolveWith((states) => Colors.black),
-                                               
+                                      headingRowColor:
+                                          MaterialStateColor.resolveWith(
+                                              (states) => Colors.black),
                                       columns: [
                                         DataColumn(
                                           label: Text(
@@ -246,6 +251,14 @@ class _DamageProdState extends State<DamageProd> {
                                         ),
                                         DataColumn(
                                           label: Text(
+                                            'REMARKS',
+                                            style: GoogleFonts.ptSerif(
+                                                fontStyle: FontStyle.italic,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                        DataColumn(
+                                          label: Text(
                                             'TOTAL',
                                             style: GoogleFonts.ptSerif(
                                                 fontStyle: FontStyle.italic,
@@ -262,12 +275,13 @@ class _DamageProdState extends State<DamageProd> {
                                         bool isLastRow =
                                             index == datatblerow.length - 1;
                                         return DataRow(
-                                            color: MaterialStateColor
-                                                .resolveWith(
+                                            color:
+                                                MaterialStateColor.resolveWith(
                                                     (Set<MaterialState>
                                                         states) {
                                               return isLastRow
-                                                  ? const Color.fromARGB(255, 157, 162, 193)
+                                                  ? const Color.fromARGB(
+                                                      255, 157, 162, 193)
                                                   : Colors.white;
                                             }),
                                             cells: [
@@ -278,9 +292,26 @@ class _DamageProdState extends State<DamageProd> {
                                                 Text(e["qty"].toString()),
                                               ),
                                               DataCell(
-                                                Text(
-                                                    e["s_rate_1"].toString()),
+                                                Text(e["s_rate_1"].toString()),
                                               ),
+                                              DataCell(isLastRow
+                                                  ? SizedBox()
+                                                  : Expanded(
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          dilogbox(
+                                                              context,
+                                                              e["remarks"]
+                                                                  .toString());
+                                                        },
+                                                        child: SizedBox(
+                                                            height: 25,
+                                                            width: 24,
+                                                            child: Image.asset(
+                                                              "assets/tap.png",
+                                                            )),
+                                                      ),
+                                                    )),
                                               DataCell(
                                                 Text(e["tot"].toString()),
                                               ),
@@ -288,7 +319,9 @@ class _DamageProdState extends State<DamageProd> {
                                       }).toList(),
                                     ),
                                   ),
-                                  SizedBox(height: 15,)
+                                  SizedBox(
+                                    height: 15,
+                                  )
                                 ],
                               );
                             }),
@@ -302,7 +335,7 @@ class _DamageProdState extends State<DamageProd> {
                     height: 55,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.blue,
+                      color: Color.fromARGB(255, 31, 91, 125),
                     ),
                     padding: EdgeInsets.only(right: 10, left: 10),
                     child: Row(
@@ -325,6 +358,22 @@ class _DamageProdState extends State<DamageProd> {
         ),
       ),
       title: 'Damage Products',
+    );
+  }
+
+  Future<String?> dilogbox(BuildContext context, String remarks) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        // title: const Text('AlertDialog Title'),
+        content: Text(remarks),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 }

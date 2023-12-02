@@ -81,9 +81,9 @@ class _MyAppState extends State<MyApp> {
           // MonthlyPro(),
           //  DamageProd(),
           // DailyProduct(),
-          //  SplashScreen(),
+           SplashScreen(),
           // RegisterScreen(),
-          HomeScreen(),
+          // HomeScreen(),
       //  BarChartSample3(),
       localizationsDelegates: const [
         GlobalWidgetsLocalizations.delegate,

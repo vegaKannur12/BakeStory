@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class DailyProduct extends StatefulWidget {
@@ -27,11 +28,17 @@ class _DailyProductState extends State<DailyProduct> {
     dateInput.text = datetoday; //set the initial value of text field
     Provider.of<Controller>(context, listen: false)
         .getBranch(context, datetoday);
+        // Provider.of<Controller>(context, listen: false)
+        //                         .getDailyProductionReport(
+        //                             context,
+        //                             formattedDate,
+        //                             value.selectedBranch["CID"].toString());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return MyScaffold(
       hasDrawer: true,
       scBgColor: Color.fromARGB(255, 250, 223, 205),
@@ -144,22 +151,23 @@ class _DailyProductState extends State<DailyProduct> {
               height: 30,
             ),
             value.isProdLoding
-                ? Padding(
-                    padding: EdgeInsets.only(top: 70),
-                    child: SpinKitDualRing(
-                      color: Colors.blue,
-                      lineWidth: 5.0,
-                      size: 40,
-                      duration: Duration(minutes: 5),
-                    ))
+                ? SizedBox(
+                    height: size.height * 0.6,
+                    child: SpinKitFadingCircle(
+                      color: Colors.black,
+                      duration: Duration(minutes: 10),
+                    ),
+                  )
                 : value.list.length == 0
-                    ? Padding(
-                        padding: EdgeInsets.only(top: 150),
-                        child: Image.asset(
-                          "assets/folder.png",
-                          height: 80,
-                          width: 60,
-                        ))
+                    ? Container(
+                        height: size.height * 0.6,
+                        child: Center(
+                          child: Lottie.asset(
+                            "assets/nodata.json",
+                            height: 100,
+                          ),
+                        ),
+                      )
                     : Expanded(
                         child: ListView.builder(
                             // physics: NeverScrollableScrollPhysics(),
@@ -310,7 +318,7 @@ class _DailyProductState extends State<DailyProduct> {
               height: 5,
             ),
             //  value.isProdLoding &&
-            value.grandtot == 0.0
+            value.grandtot == 0.0 || value.isProdLoding
                 ? Container()
                 : Container(
                     height: 55,
