@@ -109,6 +109,7 @@ class Controller extends ChangeNotifier {
   String qtydata = "";
   List cnameGRaPList = [];
   List nosGRaPList = [];
+  String defbrnch="";
 
 /////////////////////////////////////////////
   Future<RegistrationData?> postRegistration(
@@ -293,6 +294,7 @@ class Controller extends ChangeNotifier {
             branchlist.add(item);
           }
           selectedBranch = branchlist[0];
+          defbrnch=selectedBranch["CID"].toString();
           notifyListeners();
           getDashboard(context, datetoday!, branchlist[0]["CID"].toString());
           print("branchlist.......$branchlist");

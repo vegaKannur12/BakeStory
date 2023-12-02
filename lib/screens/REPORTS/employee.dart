@@ -18,16 +18,21 @@ class _EmployReportState extends State<EmployReport> {
   @override
   void initState() {
     String datetoday = DateFormat('dd-MM-yyyy').format(DateTime.now());
-
-    Provider.of<Controller>(context, listen: false)
-        .getBranch(context, datetoday);
+    String d = Provider.of<Controller>(context, listen: false).defbrnch;
+    print("jhgfdstrtyuijkkltttttttttttttttttttt>>>>$d");
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Provider.of<Controller>(context, listen: false)
+          .getBranch(context, datetoday);
+      Provider.of<Controller>(context, listen: false)
+          .getEmployeeReport(context, d);
+    });
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-     Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
     return MyScaffold(
         hasDrawer: true,
         scBgColor: Color.fromARGB(255, 250, 223, 205),
@@ -77,12 +82,12 @@ class _EmployReportState extends State<EmployReport> {
               ),
               value.isEMPreportLoading
                   ? SizedBox(
-                    height: size.height * 0.6,
-                    child: SpinKitFadingCircle(
-                      color: Colors.black,
-                      duration: Duration(minutes: 10),
-                    ),
-                  )
+                      height: size.height * 0.6,
+                      child: SpinKitFadingCircle(
+                        color: Colors.black,
+                        duration: Duration(minutes: 10),
+                      ),
+                    )
                   : Expanded(
                       child: ListView.builder(
                           itemCount: value.proReportWidget.length,

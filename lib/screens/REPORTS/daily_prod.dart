@@ -25,14 +25,15 @@ class _DailyProductState extends State<DailyProduct> {
   void initState() {
     grndtotRow = false;
     String datetoday = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    dateInput.text = datetoday; //set the initial value of text field
-    Provider.of<Controller>(context, listen: false)
-        .getBranch(context, datetoday);
-        // Provider.of<Controller>(context, listen: false)
-        //                         .getDailyProductionReport(
-        //                             context,
-        //                             formattedDate,
-        //                             value.selectedBranch["CID"].toString());
+    dateInput.text = datetoday;
+    String d = Provider.of<Controller>(context, listen: false).defbrnch;
+    print("jhgfdstrtyuijkkltttttttttttttttttttt>>>>$d");
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Provider.of<Controller>(context, listen: false)
+          .getBranch(context, datetoday);
+      Provider.of<Controller>(context, listen: false)
+          .getDailyProductionReport(context, datetoday, d);
+    });
     super.initState();
   }
 
@@ -332,7 +333,7 @@ class _DailyProductState extends State<DailyProduct> {
                       children: [
                         Text(
                           "GRAND TOTAL",
-                          style:  GoogleFonts.ptSerif(
+                          style: GoogleFonts.ptSerif(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                         Text(

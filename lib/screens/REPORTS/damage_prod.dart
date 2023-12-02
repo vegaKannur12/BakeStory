@@ -24,8 +24,14 @@ class _DamageProdState extends State<DamageProd> {
     // TODO: implement initState
     String datetoday = DateFormat('dd-MM-yyyy').format(DateTime.now());
     dateInput.text = datetoday;
-    Provider.of<Controller>(context, listen: false)
-        .getBranch(context, datetoday);
+    String d = Provider.of<Controller>(context, listen: false).defbrnch;
+    print("jhgfdstrtyuijkkltttttttttttttttttttt>>>>$d");
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Provider.of<Controller>(context, listen: false)
+          .getBranch(context, datetoday);
+      Provider.of<Controller>(context, listen: false)
+          .getDamageProductionReport(context, datetoday, d);
+    });
     super.initState();
   }
 
@@ -296,21 +302,21 @@ class _DamageProdState extends State<DamageProd> {
                                               ),
                                               DataCell(isLastRow
                                                   ? SizedBox()
-                                                  : Expanded(
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          dilogbox(
-                                                              context,
-                                                              e["remarks"]
-                                                                  .toString());
-                                                        },
-                                                        child: SizedBox(
-                                                            height: 25,
-                                                            width: 24,
-                                                            child: Image.asset(
-                                                              "assets/tap.png",
-                                                            )),
-                                                      ),
+                                                  : GestureDetector(
+                                                      onTap: () {
+                                                        dilogbox(
+                                                            context,
+                                                            e["p_name"]
+                                                                .toString(),
+                                                            e["remarks"]
+                                                                .toString());
+                                                      },
+                                                      child: SizedBox(
+                                                          height: 25,
+                                                          width: 24,
+                                                          child: Image.asset(
+                                                            "assets/tap.png",
+                                                          )),
                                                     )),
                                               DataCell(
                                                 Text(e["tot"].toString()),
@@ -329,7 +335,7 @@ class _DamageProdState extends State<DamageProd> {
             SizedBox(
               height: 5,
             ),
-            value.grandtotdamge == 0.0
+            value.grandtotdamge == 0.0 || value.isDamageLoding
                 ? Container()
                 : Container(
                     height: 55,
@@ -361,12 +367,19 @@ class _DamageProdState extends State<DamageProd> {
     );
   }
 
-  Future<String?> dilogbox(BuildContext context, String remarks) {
+  Future<String?> dilogbox(BuildContext context, String title, String remarks) {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        // title: const Text('AlertDialog Title'),
-        content: Text(remarks),
+        contentPadding: EdgeInsets.only(right: 5, left: 22, top: 10),
+        title: Text(
+          title,
+          style: GoogleFonts.ptSerif(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          remarks,
+          style: GoogleFonts.ptSerif(),
+        ),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context, 'OK'),
