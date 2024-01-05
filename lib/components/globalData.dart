@@ -9,5 +9,5 @@ class Globaldata {
   // static final apiglobal = "http://trafiqerp.in/webapp/hamco/api/";
   static final imageurl = "https://trafiqerp.in/webapp/hamco/item_image/";
   // static final apiglobal = "https://trafiqerp.in/rapi/";
-  static final apiglobal = "http://192.168.18.168:10000/api";
+  static final apiglobal = "http://192.168.18.168:8000/api";
 }

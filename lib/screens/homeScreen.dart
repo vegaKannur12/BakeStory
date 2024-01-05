@@ -38,14 +38,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
-      scBgColor: Color.fromARGB(255, 195, 204, 212),
+      scBgColor: const Color.fromARGB(255, 195, 204, 212),
       hasDrawer: true,
       body: SingleChildScrollView(
         child: Consumer<Controller>(builder: (context, value, child) {
           // List damagell = value.damagelistdash;
           return Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -53,13 +53,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: Container(
                       height: 47,
-                      padding: EdgeInsets.only(left: 5, right: 5),
+                      padding: const EdgeInsets.only(left: 5, right: 5),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20)),
                       child: TextField(
                         controller: dateInput,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(top: 5, bottom: 5),
                           icon: Icon(Icons.calendar_today), //icon of text field
@@ -100,17 +100,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.only(right: 5, left: 5),
+                      padding: const EdgeInsets.only(right: 5, left: 5),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20)),
                       child: DropdownButton<Map>(
-                        underline: SizedBox(),
+                        underline: const SizedBox(),
                         value: value.selectedBranch,
                         items: value.branchlist.map((branch) {
                           // cid = branch["CID"].toString();
@@ -140,17 +140,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                           print("cidddddddddd===============>>>>${cid}");
                         },
-                        hint: Text('Select Branch'),
+                        hint: const Text('Select Branch'),
                       ),
                     ),
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-      
-              SizedBox(
+
+              const SizedBox(
                 height: 30,
               ),
 
@@ -163,11 +163,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   "assets/prod.png"),
               dashcontainer(
                   "Damaged Products", value.qtydata, "assets/dam.png"),
-              SizedBox(
+              const SizedBox(
                 height: 40,
               ),
               value.graphlistdash.length == 0
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Column(
                       children: [
                         Text(
@@ -184,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               ListView.builder(
@@ -209,7 +209,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontSize: 18,
                                 color: Colors.black54,
                                 fontWeight: FontWeight.bold)),
-                                SizedBox(height: 5,),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         SizedBox(
                             height: 50,
                             child: DChartSingleBar(
@@ -227,7 +229,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           fontWeight: FontWeight.bold))),
                               max: 100,
                             )),
-                            Text("Quantity : ${value.graphlistdash[index]["nos"]}",style: GoogleFonts.ptSerif(color: Colors.black,fontSize: 15),),
+                        Text(
+                          "Quantity : ${value.graphlistdash[index]["nos"]}",
+                          style: GoogleFonts.ptSerif(
+                              color: Colors.black, fontSize: 15),
+                        ),
                         const SizedBox(
                           height: 15,
                         )
@@ -249,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
       elevation: 5,
       child: Container(
         decoration: BoxDecoration(
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
@@ -266,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -279,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         icn,
                         color: Colors.white70,
                       )),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Text(
@@ -291,14 +297,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
-              Divider(
+              const Divider(
                 color: Colors.black38,
                 thickness: 2,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Text(

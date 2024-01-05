@@ -21,7 +21,8 @@ class _EmployReportState extends State<EmployReport> {
 
     Provider.of<Controller>(context, listen: false)
         .getBranch(context, datetoday);
-
+    Provider.of<Controller>(context, listen: false)
+        .getEmployeeReport(context, "1");
     super.initState();
   }
 
@@ -29,23 +30,23 @@ class _EmployReportState extends State<EmployReport> {
   Widget build(BuildContext context) {
     return MyScaffold(
         hasDrawer: true,
-        scBgColor: Color.fromARGB(255, 250, 223, 205),
+        scBgColor: const Color.fromARGB(255, 250, 223, 205),
         body: Consumer<Controller>(builder: (context, value, child) {
           // Provider.of<Controller>(context, listen: false).getEmployeeReport(context,value.selectedBranch["CID"].toString());
           return Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Container(
                 height: 47,
                 width: 200,
-                padding: EdgeInsets.only(left: 5, right: 5),
+                padding: const EdgeInsets.only(left: 5, right: 5),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20)),
                 child: DropdownButton<Map>(
-                  underline: SizedBox(),
+                  underline: const SizedBox(),
                   elevation: 0,
                   value: value.selectedBranch,
                   items: value.branchlist.map((branch) {
@@ -68,14 +69,14 @@ class _EmployReportState extends State<EmployReport> {
                     });
                     //  print("cidddddddddd===============>>>>${cid}");
                   },
-                  hint: Text('Select Branch'),
+                  hint: const Text('Select Branch'),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               value.isEMPreportLoading
-                  ? Padding(
+                  ? const Padding(
                       padding: EdgeInsets.only(top: 70),
                       child: SpinKitDualRing(
                         color: Colors.blue,
@@ -84,11 +85,15 @@ class _EmployReportState extends State<EmployReport> {
                         duration: Duration(minutes: 5),
                       ))
                   : Expanded(
-                      child: ListView.builder(
-                          itemCount: value.proReportWidget.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return value.proReportWidget[index];
-                          }),
+                      child: Scrollbar(
+                        thickness: 15,
+                        radius: const Radius.circular(10),
+                        child: ListView.builder(
+                            itemCount: value.proReportWidget.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return value.proReportWidget[index];
+                            }),
+                      ),
                     ),
             ],
           );

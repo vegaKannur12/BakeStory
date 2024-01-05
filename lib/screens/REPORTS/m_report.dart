@@ -1,31 +1,35 @@
 import 'package:bakestory_report/commonwidgets/commonScaffold.dart';
 import 'package:bakestory_report/controller/controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
 
-class DamageProd extends StatefulWidget {
-  const DamageProd({super.key});
+class Report extends StatefulWidget {
+  const Report({super.key});
 
   @override
-  State<DamageProd> createState() => _DamageProdState();
+  State<Report> createState() => _ReportState();
 }
 
-class _DamageProdState extends State<DamageProd> {
+class _ReportState extends State<Report> {
   TextEditingController dateInput = TextEditingController();
   String formattedDate = "";
-  double gtot = 0.0;
-  String cid = "";
+  bool grndtotRow = false;
+  DateTime? _selected;
   @override
   void initState() {
-    // TODO: implement initState
+    grndtotRow = false;
     String datetoday = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    dateInput.text = datetoday;
-    Provider.of<Controller>(context, listen: false)
-        .getBranch(context, datetoday);
+    dateInput.text = DateFormat('MM-yyyy').format(DateTime.now());
+    Provider.of<Controller>(context, listen: false).getCategoryList(context);
     super.initState();
+    Provider.of<Controller>(context, listen: false)
+        .getDailyMonthlyReport(context, datetoday, "1", 1, "1");
   }
 
   @override
@@ -33,6 +37,7 @@ class _DamageProdState extends State<DamageProd> {
     return MyScaffold(
       hasDrawer: true,
       scBgColor: const Color.fromARGB(255, 250, 223, 205),
+
       // row: Calender(),
 
       // body: Consumer<Controller>(builder: (context, value, child) {
@@ -42,8 +47,8 @@ class _DamageProdState extends State<DamageProd> {
       //     itemBuilder: (BuildContext context, int index) {
       //       return value.proReportWidget[index];
       //     });
-
       // }),
+
       body: Consumer<Controller>(
         builder: (context, value, child) => Column(
           children: [
@@ -54,65 +59,68 @@ class _DamageProdState extends State<DamageProd> {
               children: [
                 Expanded(
                   child: Container(
-                    height: 47,
-                    padding: const EdgeInsets.only(left: 5, right: 5),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: TextField(
-                      controller: dateInput,
-                      //editing controller of this TextField
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 5),
-                        icon: Icon(Icons.calendar_today), //icon of text field
-                        //label text of field
-                      ),
-                      readOnly: true,
-                      //set it true, so that user will not able to edit text
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(1950),
-                            //DateTime.now() - not to allow to choose before today.
-                            lastDate: DateTime(2100));
+                      height: 47,
+                      padding: const EdgeInsets.only(left: 5, right: 5),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: TextFormField(
+                        controller: dateInput,
+                        // validator:
+                        //     value.isEmpty ? 'this field is required' : null,
+                        readOnly: true,
+                        style: GoogleFonts.ptSerif(fontSize: 16),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintStyle: GoogleFonts.ptSerif(fontSize: 16),
+                          hintText: 'Pick Year',
+                          suffixIcon: const Icon(Icons.calendar_today),
+                        ),
+                        onTap: () async {
+                          final pickedDate = await showMonthYearPicker(
+                              context: context,
+                              initialDate: _selected ?? DateTime.now(),
+                              firstDate: DateTime(2019),
+                              lastDate: DateTime(2030),
+                              locale: const Locale('en', 'US'));
 
-                        if (pickedDate != null) {
-                          print(
-                              pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                          formattedDate =
-                              DateFormat('dd-MM-yyyy').format(pickedDate);
-                          print(
-                              formattedDate); //formatted date output using intl package =>  2021-03-16
-                          setState(() {
-                            dateInput.text = formattedDate;
-                            Provider.of<Controller>(context, listen: false)
-                                .getDamageProductionReport(
-                                    context,
-                                    formattedDate,
-                                    value.selectedBranch["CID"].toString());
-                            //set output date to TextField value.
-                          });
-                        } else {}
-                      },
-                    ),
-                  ),
+                          if (pickedDate != null) {
+                            print(
+                                pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                            formattedDate =
+                                DateFormat('yyyy-MM-dd').format(pickedDate);
+                            print(
+                                formattedDate); //formatted date output using intl package =>  2021-03-16
+                            setState(() {
+                              dateInput.text =
+                                  DateFormat('MM-yyyy').format(pickedDate);
+                              Provider.of<Controller>(context, listen: false)
+                                  .getDailyMonthlyReport(
+                                      context,
+                                      formattedDate,
+                                      value.selectedBranch["CID"].toString(),
+                                      1,
+                                      value.selectedCategory["cat_id"]
+                                          .toString());
+                              //set output date to TextField value.
+                            });
+                          } else {}
+                        },
+                      )),
                 ),
                 const SizedBox(
                   width: 5,
                 ),
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.only(right: 5, left: 5),
+                    padding: const EdgeInsets.only(left: 5, right: 5),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20)),
                     child: DropdownButton<Map>(
-                      underline: const SizedBox(),
                       value: value.selectedBranch,
+                      underline: const SizedBox(),
                       items: value.branchlist.map((branch) {
-                        // cid = branch["CID"].toString();
                         return DropdownMenuItem<Map>(
                           value: branch,
                           child: Text(
@@ -122,16 +130,19 @@ class _DamageProdState extends State<DamageProd> {
                         );
                       }).toList(),
                       onChanged: (val) {
-                        setState(() {
-                          //  print(value!["CID"]);
-                          cid = val!["CID"].toString();
-                          value.selectedBranch = val;
+                        setState(() async {
+                          value.selectedBranch = val!;
+
                           value.changebranch(val);
                           Provider.of<Controller>(context, listen: false)
-                              .getDamageProductionReport(
-                                  context, formattedDate, cid);
+                              .getDailyMonthlyReport(
+                            context,
+                            formattedDate,
+                            value.selectedBranch["CID"].toString(),
+                            1,
+                            value.selectedCategory["cat_id"].toString(),
+                          );
                         });
-                        print("cidddddddddd===============>>>>${cid}");
                       },
                       hint: const Text('Select Branch'),
                     ),
@@ -140,9 +151,64 @@ class _DamageProdState extends State<DamageProd> {
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
-            value.isDamageLoding
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                    child: Text("Choose Category  :",
+                        style: GoogleFonts.ptSerif(fontSize: 18))),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: DropdownButton<Map>(
+                      value: value.selectedCategory,
+                      underline: const SizedBox(),
+                      items: value.catList.map((cat) {
+                        return DropdownMenuItem<Map>(
+                          value: cat,
+                          child: Text(
+                            cat["cat_name"],
+                            style: GoogleFonts.ptSerif(fontSize: 13),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() async {
+                          // cid = val!["cat_id"].toString();
+                          value.selectedCategory = val!;
+                          value.changecat(val!);
+                          Provider.of<Controller>(context, listen: false)
+                              .getDailyMonthlyReport(
+                                  context,
+                                  formattedDate,
+                                  value.selectedBranch["CID"].toString(),
+                                  1,
+                                  value.selectedCategory["cat_id"].toString());
+                          print(
+                              "selected this cat----->>>>>>>>>>>>>>>>${value.selectedCategory["cat_id"]}");
+                          // Provider.of<Controller>(context, listen: false)
+                          //     .getDailyMonthlyReport(
+                          //         context, formattedDate, cid, 1);
+                        });
+                      },
+                      hint: const Text('Select Category'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            value.isProdLoding
                 ? const Padding(
                     padding: EdgeInsets.only(top: 70),
                     child: SpinKitDualRing(
@@ -151,7 +217,7 @@ class _DamageProdState extends State<DamageProd> {
                       size: 40,
                       duration: Duration(minutes: 5),
                     ))
-                : value.list1.length == 0
+                : value.list.length == 0
                     ? Padding(
                         padding: const EdgeInsets.only(top: 150),
                         child: Image.asset(
@@ -165,33 +231,29 @@ class _DamageProdState extends State<DamageProd> {
                           radius: const Radius.circular(10),
                           child: ListView.builder(
                               // physics: NeverScrollableScrollPhysics(),
-                              itemCount: value.list1.length,
+                              itemCount: value.list.length,
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
-                                List list = value.list1[index].values.first;
-                                String ccid =
-                                    value.list1[index].keys.first.toString();
+                                List list = value.list[index].values.first;
                                 List datatblerow = [];
-                                String cheff = "";
+                                String chef = "";
                                 int i = 0;
-                                List cnm = [];
                                 for (var item in list) {
-                                  // print("toot typ${item["tot"].runtimeType}");
-                                  if (item["c_name"].isNotEmpty &&
-                                      item["flg"] != 2) {
+                                  if (item["p_name"].isNotEmpty) {
                                     datatblerow.add(item);
                                   }
-                                  // print("object ${item["c_name"]}");
-                                  if (item['c_name'] != null &&
-                                      item['c_name'] != " " &&
-                                      item['c_name'].isNotEmpty) {
-                                    cheff = item["c_name"].toString();
-                                    // print("chhhhhhhhhhhhhhhhhhhhhhhh$cheff");
-                                    // cnm.add(item["c_name"]);
+                                  print("object${item["c_name"].runtimeType}");
+                                  if (item["c_name"].isNotEmpty) {
+                                    chef = item["c_name"].toString();
                                   }
-                                }
-                                // print("object$cnm");
 
+                                  //   if (item["flg"] == "2") {
+
+                                  //     grandtot = grandtot + double.parse(item["tot"]);
+
+                                  // }
+                                }
+                                print("valuess  hhh---$list");
                                 return Column(
                                   children: [
                                     Row(
@@ -202,13 +264,12 @@ class _DamageProdState extends State<DamageProd> {
                                           width: 10,
                                         ),
                                         Text(
-                                          cheff,
+                                          chef,
                                           // value.list[index].keys.first.toString(),
                                           style: GoogleFonts.ptSerif(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.indigo,
-                                          ),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.red[800]),
                                         ),
                                       ],
                                     ),
@@ -219,16 +280,26 @@ class _DamageProdState extends State<DamageProd> {
                                       scrollDirection: Axis.horizontal,
                                       child: DataTable(
                                         columnSpacing: 20,
-                                        headingTextStyle: GoogleFonts.ptSerif(
-                                            color: Colors.white),
+                                        // headingTextStyle: TextStyle(color: Colors.white),
                                         headingRowHeight: 45,
+                                        decoration: const BoxDecoration(
+                                            color: Colors.white),
                                         headingRowColor:
                                             MaterialStateColor.resolveWith(
                                                 (states) => Colors.black),
+
                                         columns: [
                                           DataColumn(
                                             label: Text(
                                               'PRODUCT NAME',
+                                              style: GoogleFonts.ptSerif(
+                                                  fontStyle: FontStyle.italic,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: Text(
+                                              'EXPECTED QTY',
                                               style: GoogleFonts.ptSerif(
                                                   fontStyle: FontStyle.italic,
                                                   color: Colors.white),
@@ -274,7 +345,7 @@ class _DamageProdState extends State<DamageProd> {
                                                           states) {
                                                 return isLastRow
                                                     ? const Color.fromARGB(
-                                                        255, 157, 162, 193)
+                                                        255, 165, 209, 229)
                                                     : Colors.white;
                                               }),
                                               cells: [
@@ -282,7 +353,10 @@ class _DamageProdState extends State<DamageProd> {
                                                   Text(e["p_name"].toString()),
                                                 ),
                                                 DataCell(
-                                                  Text(e["qty"].toString()),
+                                                  Text(e["exp_nos"].toString()),
+                                                ),
+                                                DataCell(
+                                                  Text(e["nos"].toString()),
                                                 ),
                                                 DataCell(
                                                   Text(
@@ -297,7 +371,7 @@ class _DamageProdState extends State<DamageProd> {
                                     ),
                                     const SizedBox(
                                       height: 15,
-                                    )
+                                    ),
                                   ],
                                 );
                               }),
@@ -306,7 +380,8 @@ class _DamageProdState extends State<DamageProd> {
             const SizedBox(
               height: 5,
             ),
-            value.grandtotdamge == 0.0 || value.isDamageLoding
+            //  value.isProdLoding &&
+            value.grandtot == 0.0 || value.isProdLoding
                 ? Container()
                 : Container(
                     height: 55,
@@ -324,7 +399,7 @@ class _DamageProdState extends State<DamageProd> {
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                         Text(
-                          " \u{20B9} ${value.grandtotdamge.toStringAsFixed(2)}",
+                          " \u{20B9} ${value.grandtot.toStringAsFixed(2)}",
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         )
@@ -334,7 +409,7 @@ class _DamageProdState extends State<DamageProd> {
           ],
         ),
       ),
-      title: 'Damage Products',
+      title: 'Monthly Production Report',
     );
   }
 }

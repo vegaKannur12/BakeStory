@@ -60,6 +60,7 @@ class Controller extends ChangeNotifier {
   var reportjson;
   Map graphMap = {};
   Map selectedBranch = {};
+  Map selectedCategory = {};
   List<String> legends = [];
   List<String> colorList = [];
   List<Color> colorListCopy = [];
@@ -90,6 +91,7 @@ class Controller extends ChangeNotifier {
   List<Map<String, dynamic>> monthlyprodReportlist = [];
   List<Map<dynamic, dynamic>> damageprodReportlist = [];
   List<Map<String, dynamic>> employeeReportlist = [];
+  List<Map<dynamic, dynamic>> catList = [];
   List proReportWidget = [];
   List monthReportWidget = [];
   List dailyprodnewkeylist = [];
@@ -323,6 +325,10 @@ class Controller extends ChangeNotifier {
     selectedBranch = val;
     notifyListeners();
   }
+   changecat(Map val) {
+    selectedCategory = val;
+    notifyListeners();
+  }
 
   ///////////////////////////////////////////////////////////
   getDailyProductionReport(
@@ -411,7 +417,135 @@ class Controller extends ChangeNotifier {
     });
   }
 
+  /////////////////////////////................////////////////
+  getDailyMonthlyReport(
+      BuildContext context, String formattedDate, String cid,int f,String catid) async {
+    var resultList = <String, List<Map<String, dynamic>>>{};
+    var grandtotlist = [];
+    NetConnection.networkConnection(context).then((value) async {
+      if (value == true) {
+        try {
+          isProdLoding = true;
+          notifyListeners();
+          Uri url = Uri.parse("$urlglobl/fetch_daily_production_report");
+          Map body = {"to_date": formattedDate, "company_id": cid,"d_o_m":f,"cat_id":catid};
+          // Map body = {"to_date": formattedDate, "company_id": cid};
+          print("body----$body");
+          SharedPreferences localStorage =
+              await SharedPreferences.getInstance();
+          token = localStorage.getString('token') ?? " ";
+          http.Response response =
+              await http.post(url, body: jsonEncode(body), headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          });
+          var map = json.decode(response.body);
+          // print("Prod list map-----$map");
+          dailyprodReportlist.clear();
+          for (var item in map["data"]) {
+            dailyprodReportlist.add(item);
+          }
+          // for (var i = 0; i < (dailyprodReportlist.length-1); i++) {
+          // }
+
+          var dailyprodnewMap =
+              groupBy(dailyprodReportlist, (Map obj) => obj['employee_id']);
+          print("new mon__dailyProd-------.>>$dailyprodnewMap");
+          dailyprodnewkeylist.clear();
+          dailyprodnewMap.keys.forEach((key) {
+            print(".......................................$key");
+            dailyprodnewkeylist.add(key);
+          });
+          /////////////////////////////////////////////////////////////
+          grandtot = 0.0;
+          // print("listt hhhh----$map");
+          for (var item in map["data"]) {
+            if (item["flg"] == "2") {
+              grandtot = grandtot + double.parse(item["tot"]);
+            }
+          }
+          grandtotlist.add(grandtot);
+          print("granbdtott-----$grandtot");
+          list.clear();
+          resultList = <String, List<Map<String, dynamic>>>{};
+          for (var d in map["data"]) {
+            print(d);
+            var e = {
+              "employee_id": d["employee_id"].toString(),
+              "exp_nos": d["exp_nos"].toString(),
+              "flg": d["flg"].toString(),
+              "c_name": d["c_name"].toString(),
+              "p_name": d["p_name"].toString(),
+              "nos": d["nos"].toString(),
+              "s_rate_1": d["s_rate_1"].toString(),
+              "tot": d["tot"].toString(),
+            };
+            var key = d["employee_id"].toString();
+            if (resultList.containsKey(key)) {
+              resultList[key]!.add(e);
+            } else {
+              resultList[key] = [e];
+            }
+          }
+          resultList.entries.forEach((e) => list.add({e.key: e.value}));
+          isProdLoding = false;
+          notifyListeners();
+          print("mon__dailyProd resultList---$list");
+
+          print("mon__dailyProd--->>>>>list.......$dailyprodReportlist");
+
+          // print("Branch list map-----$map");
+        } catch (e) {
+          // ignore: avoid_print
+          print(e);
+          return null;
+        }
+      }
+    });
+  }
+
   //////////////////////////////////////////////////////
+  getCategoryList(
+      BuildContext context) async {
+    NetConnection.networkConnection(context).then((value) async {
+      if (value == true) {
+        try {
+          isMonthreportLoading = true;
+          notifyListeners();
+          Uri url = Uri.parse("$urlglobl/get_category");
+          // Map body = {"to_date": "2023-11-01", "company_id": "1"};
+          Map body = {};
+          print("body----$body");
+          SharedPreferences localStorage =
+              await SharedPreferences.getInstance();
+          token = localStorage.getString('token') ?? " ";
+          http.Response response =
+              await http.post(url, body: jsonEncode(body), headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          });
+          var map = json.decode(response.body);
+          print("Catlist map-----$map");
+          catList.clear();
+          for (var item in map) {
+            catList.add(item);
+          }
+          selectedCategory = catList[0];
+          // monthlyReportList(monthlyprodReportlist);
+          isMonthreportLoading = false;
+          notifyListeners();
+         
+          print("Catlist LIST-----$catList");
+        } catch (e) {
+          // ignore: avoid_print
+          print(e);
+          return null;
+        }
+      }
+    });
+  }
   // makeuserLogContainer(List<Map<String, dynamic>> dailyprodReportlist) {
   //   int? name;
   //   String c_name;

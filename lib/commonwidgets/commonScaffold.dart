@@ -45,7 +45,7 @@ class _MyScaffoldState extends State<MyScaffold> {
           centerTitle: true,
           title: Text(widget.title,
               style: GoogleFonts.ptSerif(
-                  fontSize: 22,
+                  fontSize: 20,
                   color: Colors.black,
                   fontWeight: FontWeight.bold)),
           backgroundColor: Colors.white,

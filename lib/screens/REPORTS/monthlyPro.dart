@@ -34,11 +34,11 @@ class _MonthlyProState extends State<MonthlyPro> {
   Widget build(BuildContext context) {
     return MyScaffold(
         hasDrawer: true,
-        scBgColor: Color.fromARGB(255, 250, 223, 205),
+        scBgColor: const Color.fromARGB(255, 250, 223, 205),
         body: Consumer<Controller>(builder: (context, value, child) {
           return Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -46,7 +46,7 @@ class _MonthlyProState extends State<MonthlyPro> {
                   Expanded(
                     child: Container(
                         height: 47,
-                        padding: EdgeInsets.only(left: 5, right: 5),
+                        padding: const EdgeInsets.only(left: 5, right: 5),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20)),
@@ -60,7 +60,7 @@ class _MonthlyProState extends State<MonthlyPro> {
                             border: InputBorder.none,
                             hintStyle: GoogleFonts.ptSerif(fontSize: 16),
                             hintText: 'Pick Year',
-                            suffixIcon: Icon(Icons.calendar_today),
+                            suffixIcon: const Icon(Icons.calendar_today),
                           ),
                           onTap: () async {
                             final pickedDate = await showMonthYearPicker(
@@ -68,7 +68,7 @@ class _MonthlyProState extends State<MonthlyPro> {
                                 initialDate: _selected ?? DateTime.now(),
                                 firstDate: DateTime(2019),
                                 lastDate: DateTime(2030),
-                                locale: Locale('en', 'US'));
+                                locale: const Locale('en', 'US'));
 
                             if (pickedDate != null) {
                               print(
@@ -89,17 +89,17 @@ class _MonthlyProState extends State<MonthlyPro> {
                           },
                         )),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.only(left: 5, right: 5),
+                      padding: const EdgeInsets.only(left: 5, right: 5),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20)),
                       child: DropdownButton<Map>(
-                        underline: SizedBox(),
+                        underline: const SizedBox(),
                         value: value.selectedBranch,
 
                         // icon: Icon(Icons.arrow_circle_down),
@@ -122,18 +122,17 @@ class _MonthlyProState extends State<MonthlyPro> {
                                 .getProlossReport(context, formattedDate, cid);
                           });
                         },
-                        hint: Text('Select Branch'),
+                        hint: const Text('Select Branch'),
                       ),
                     ),
                   )
                 ],
               ),
-             
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               value.isMonthreportLoading
-                  ? Padding(
+                  ? const Padding(
                       padding: EdgeInsets.only(top: 70),
                       child: SpinKitDualRing(
                         color: Colors.blue,

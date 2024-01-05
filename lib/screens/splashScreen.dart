@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/controller.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -22,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   String? st_pwd;
 
   navigate() async {
-    await Future.delayed(Duration(seconds: 3), () async {
+    await Future.delayed(const Duration(seconds: 3), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final st_uname = prefs.getString("st_uname");
       final st_pwd = prefs.getString("st_pwde");
@@ -34,12 +33,12 @@ class _SplashScreenState extends State<SplashScreen> {
               pageBuilder: (_, __, ___) {
                 if (cid != null) {
                   if (st_uname != null && st_pwd != null) {
-                    return HomeScreen();
+                    return const HomeScreen();
                   } else {
-                    return LoginScreen();
+                    return const LoginScreen();
                   }
                 } else {
-                  return RegisterScreen();
+                  return const RegisterScreen();
                 }
               }));
       // Navigator.push(

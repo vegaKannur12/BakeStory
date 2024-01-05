@@ -1,7 +1,5 @@
-import 'package:bakestory_report/commoncalender.dart';
 import 'package:bakestory_report/commonwidgets/commonScaffold.dart';
 import 'package:bakestory_report/controller/controller.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,8 +16,8 @@ class DailyProduct extends StatefulWidget {
 class _DailyProductState extends State<DailyProduct> {
   TextEditingController dateInput = TextEditingController();
   String formattedDate = "";
-  String cid = "";
   bool grndtotRow = false;
+
   @override
   void initState() {
     grndtotRow = false;
@@ -28,13 +26,16 @@ class _DailyProductState extends State<DailyProduct> {
     Provider.of<Controller>(context, listen: false)
         .getBranch(context, datetoday);
     super.initState();
+    Provider.of<Controller>(context, listen: false).getCategoryList(context);
+    Provider.of<Controller>(context, listen: false)
+        .getDailyMonthlyReport(context, datetoday, "1", 0, "1");
   }
 
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
       hasDrawer: true,
-      scBgColor: Color.fromARGB(255, 250, 223, 205),
+      scBgColor: const Color.fromARGB(255, 250, 223, 205),
       // row: Calender(),
 
       // body: Consumer<Controller>(builder: (context, value, child) {
@@ -49,7 +50,7 @@ class _DailyProductState extends State<DailyProduct> {
       body: Consumer<Controller>(
         builder: (context, value, child) => Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
@@ -57,7 +58,7 @@ class _DailyProductState extends State<DailyProduct> {
                 Expanded(
                   child: Container(
                     height: 47,
-                    padding: EdgeInsets.only(left: 5, right: 5),
+                    padding: const EdgeInsets.only(left: 5, right: 5),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20)),
@@ -65,7 +66,7 @@ class _DailyProductState extends State<DailyProduct> {
                       style: GoogleFonts.ptSerif(color: Colors.black),
                       controller: dateInput,
                       //editing controller of this TextField
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
 
                         icon: Icon(Icons.calendar_today), //icon of text field
@@ -90,31 +91,37 @@ class _DailyProductState extends State<DailyProduct> {
                               formattedDate); //formatted date output using intl package =>  2021-03-16
                           setState(() {
                             dateInput.text = formattedDate;
+                            // Provider.of<Controller>(context, listen: false)
+                            //     .getDailyProductionReport(
+                            //         context,
+                            //         formattedDate,
+                            //         value.selectedBranch["CID"].toString());
                             Provider.of<Controller>(context, listen: false)
-                                .getDailyProductionReport(
+                                .getDailyMonthlyReport(
                                     context,
                                     formattedDate,
-                                    value.selectedBranch["CID"].toString());
-
-                            //set output date to TextField value.
+                                    value.selectedBranch["CID"].toString(),
+                                    0,
+                                    value.selectedCategory["cat_id"]
+                                        .toString());
                           });
                         } else {}
                       },
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.only(left: 5, right: 5),
+                    padding: const EdgeInsets.only(left: 5, right: 5),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20)),
                     child: DropdownButton<Map>(
                       value: value.selectedBranch,
-                      underline: SizedBox(),
+                      underline: const SizedBox(),
                       items: value.branchlist.map((branch) {
                         return DropdownMenuItem<Map>(
                           value: branch,
@@ -126,25 +133,86 @@ class _DailyProductState extends State<DailyProduct> {
                       }).toList(),
                       onChanged: (val) {
                         setState(() async {
-                          cid = val!["CID"].toString();
-                          value.selectedBranch = val;
+                          value.selectedBranch = val!;
                           value.changebranch(val);
+                          // Provider.of<Controller>(context, listen: false)
+                          //     .getDailyProductionReport(
+                          //         context, formattedDate, cid);
                           Provider.of<Controller>(context, listen: false)
-                              .getDailyProductionReport(
-                                  context, formattedDate, cid);
+                              .getDailyMonthlyReport(
+                                  context,
+                                  formattedDate,
+                                  value.selectedBranch["CID"].toString(),
+                                  0,
+                                  value.selectedCategory["cat_id"].toString());
                         });
                       },
-                      hint: Text('Select Branch'),
+                      hint: const Text('Select Branch'),
                     ),
                   ),
                 )
               ],
             ),
-            SizedBox(
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                    child: Text("Choose Category  :",
+                        style: GoogleFonts.ptSerif(fontSize: 18))),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: DropdownButton<Map>(
+                      value: value.selectedCategory,
+                      underline: const SizedBox(),
+                      items: value.catList.map((cat) {
+                        return DropdownMenuItem<Map>(
+                          value: cat,
+                          child: Text(
+                            cat["cat_name"],
+                            style: GoogleFonts.ptSerif(fontSize: 13),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() async {
+                          // cid = val!["cat_id"].toString();
+                          value.selectedCategory = val!;
+                          value.changecat(val!);
+                          Provider.of<Controller>(context, listen: false)
+                              .getDailyMonthlyReport(
+                                  context,
+                                  formattedDate,
+                                  value.selectedBranch["CID"].toString(),
+                                  0,
+                                  value.selectedCategory["cat_id"].toString());
+                          print(
+                              "selected this cat----->>>>>>>>>>>>>>>>${value.selectedCategory["cat_id"]}");
+                          // Provider.of<Controller>(context, listen: false)
+                          //     .getDailyMonthlyReport(
+                          //         context, formattedDate, cid, 1);
+                        });
+                      },
+                      hint: const Text('Select Category'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
               height: 30,
             ),
             value.isProdLoding
-                ? Padding(
+                ? const Padding(
                     padding: EdgeInsets.only(top: 70),
                     child: SpinKitDualRing(
                       color: Colors.blue,
@@ -154,163 +222,171 @@ class _DailyProductState extends State<DailyProduct> {
                     ))
                 : value.list.length == 0
                     ? Padding(
-                        padding: EdgeInsets.only(top: 150),
+                        padding: const EdgeInsets.only(top: 150),
                         child: Image.asset(
                           "assets/folder.png",
                           height: 80,
                           width: 60,
                         ))
                     : Expanded(
-                        child: ListView.builder(
-                            // physics: NeverScrollableScrollPhysics(),
-                            itemCount: value.list.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              List list = value.list[index].values.first;
-                              List datatblerow = [];
-                              String chef = "";
-                              int i = 0;
-                              for (var item in list) {
-                                if (item["p_name"].isNotEmpty) {
-                                  datatblerow.add(item);
+                        child: Scrollbar(
+                          thickness: 15,
+                          radius: const Radius.circular(10),
+                          child: ListView.builder(
+
+                              // physics: NeverScrollableScrollPhysics(),
+                              itemCount: value.list.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                List list = value.list[index].values.first;
+                                List datatblerow = [];
+                                String chef = "";
+                                int i = 0;
+                                for (var item in list) {
+                                  if (item["p_name"].isNotEmpty) {
+                                    datatblerow.add(item);
+                                  }
+                                  print("object${item["c_name"].runtimeType}");
+                                  if (item["c_name"].isNotEmpty) {
+                                    chef = item["c_name"].toString();
+                                  }
+
+                                  //   if (item["flg"] == "2") {
+
+                                  //     grandtot = grandtot + double.parse(item["tot"]);
+
+                                  // }
                                 }
-                                print("object${item["c_name"].runtimeType}");
-                                if (item["c_name"].isNotEmpty) {
-                                  chef = item["c_name"].toString();
-                                }
-
-                                //   if (item["flg"] == "2") {
-
-                                //     grandtot = grandtot + double.parse(item["tot"]);
-
-                                // }
-                              }
-                              print("valuess  hhh---$list");
-                              return Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        chef,
-                                        // value.list[index].keys.first.toString(),
-                                        style: GoogleFonts.ptSerif(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.red[800]),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: DataTable(
-                                      columnSpacing: 20,
-                                      // headingTextStyle: TextStyle(color: Colors.white),
-                                      headingRowHeight: 45,
-                                      decoration:
-                                          BoxDecoration(color: Colors.white),
-                                      headingRowColor:
-                                          MaterialStateColor.resolveWith(
-                                              (states) => Colors.black),
-
-                                      columns: [
-                                        DataColumn(
-                                          label: Text(
-                                            'PRODUCT NAME',
-                                            style: GoogleFonts.ptSerif(
-                                                fontStyle: FontStyle.italic,
-                                                color: Colors.white),
-                                          ),
+                                print("valuess  hhh---$list");
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(
+                                          width: 10,
                                         ),
-                                        DataColumn(
-                                          label: Text(
-                                            'EXPECTED QTY',
-                                            style: GoogleFonts.ptSerif(
-                                                fontStyle: FontStyle.italic,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Text(
-                                            'QUANTITY',
-                                            style: GoogleFonts.ptSerif(
-                                                fontStyle: FontStyle.italic,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Text(
-                                            'SALES RATE',
-                                            style: GoogleFonts.ptSerif(
-                                                fontStyle: FontStyle.italic,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Text(
-                                            'TOTAL',
-                                            style: GoogleFonts.ptSerif(
-                                                fontStyle: FontStyle.italic,
-                                                color: Colors.white),
-                                          ),
+                                        Text(
+                                          chef,
+                                          // value.list[index].keys.first.toString(),
+                                          style: GoogleFonts.ptSerif(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.red[800]),
                                         ),
                                       ],
-                                      rows: datatblerow
-                                          .asMap()
-                                          .entries
-                                          .map((entry) {
-                                        int index = entry.key;
-                                        Map<String, dynamic> e = entry.value;
-                                        bool isLastRow =
-                                            index == datatblerow.length - 1;
-                                        return DataRow(
-                                            color:
-                                                MaterialStateColor.resolveWith(
-                                                    (Set<MaterialState>
-                                                        states) {
-                                              return isLastRow
-                                                  ? Color.fromARGB(
-                                                      255, 165, 209, 229)
-                                                  : Colors.white;
-                                            }),
-                                            cells: [
-                                              DataCell(
-                                                Text(e["p_name"].toString()),
-                                              ),
-                                              DataCell(
-                                                Text(e["exp_nos"].toString()),
-                                              ),
-                                              DataCell(
-                                                Text(e["nos"].toString()),
-                                              ),
-                                              DataCell(
-                                                Text(e["s_rate_1"].toString()),
-                                              ),
-                                              DataCell(
-                                                Text(e["tot"].toString()),
-                                              ),
-                                            ]);
-                                      }).toList(),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                ],
-                              );
-                            }),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: DataTable(
+                                        columnSpacing: 20,
+                                        // headingTextStyle: TextStyle(color: Colors.white),
+                                        headingRowHeight: 45,
+                                        decoration: const BoxDecoration(
+                                            color: Colors.white),
+                                        headingRowColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => Colors.black),
+
+                                        columns: [
+                                          DataColumn(
+                                            label: Text(
+                                              'PRODUCT NAME',
+                                              style: GoogleFonts.ptSerif(
+                                                  fontStyle: FontStyle.italic,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: Text(
+                                              'EXPECTED QTY',
+                                              style: GoogleFonts.ptSerif(
+                                                  fontStyle: FontStyle.italic,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: Text(
+                                              'QUANTITY',
+                                              style: GoogleFonts.ptSerif(
+                                                  fontStyle: FontStyle.italic,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: Text(
+                                              'SALES RATE',
+                                              style: GoogleFonts.ptSerif(
+                                                  fontStyle: FontStyle.italic,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: Text(
+                                              'TOTAL',
+                                              style: GoogleFonts.ptSerif(
+                                                  fontStyle: FontStyle.italic,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ],
+                                        rows: datatblerow
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
+                                          int index = entry.key;
+                                          Map<String, dynamic> e = entry.value;
+                                          bool isLastRow =
+                                              index == datatblerow.length - 1;
+                                          return DataRow(
+                                              color: MaterialStateColor
+                                                  .resolveWith(
+                                                      (Set<MaterialState>
+                                                          states) {
+                                                return isLastRow
+                                                    ? const Color.fromARGB(
+                                                        255, 165, 209, 229)
+                                                    : Colors.white;
+                                              }),
+                                              cells: [
+                                                DataCell(
+                                                  Text(e["p_name"].toString()),
+                                                ),
+                                                DataCell(
+                                                  Text(e["exp_nos"].toString()),
+                                                ),
+                                                DataCell(
+                                                  Text(e["nos"].toString()),
+                                                ),
+                                                DataCell(
+                                                  Text(
+                                                      e["s_rate_1"].toString()),
+                                                ),
+                                                DataCell(
+                                                  Text(e["tot"].toString()),
+                                                ),
+                                              ]);
+                                        }).toList(),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                  ],
+                                );
+                              }),
+                        ),
                       ),
-            SizedBox(
+
+            const SizedBox(
               height: 5,
             ),
             //  value.isProdLoding &&
-            value.grandtot == 0.0
+            value.grandtot == 0.0 || value.isProdLoding
                 ? Container()
                 : Container(
                     height: 55,
@@ -318,13 +394,13 @@ class _DailyProductState extends State<DailyProduct> {
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.blue,
                     ),
-                    padding: EdgeInsets.only(right: 10, left: 10),
+                    padding: const EdgeInsets.only(right: 10, left: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "GRAND TOTAL",
-                          style:  GoogleFonts.ptSerif(
+                          style: GoogleFonts.ptSerif(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                         Text(
