@@ -23,7 +23,7 @@ class _MonthlyDamageState extends State<MonthlyDamage> {
   void initState() {
     // TODO: implement initState
     String datetoday = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    dateInput.text = datetoday;
+    dateInput.text = DateFormat('MM-yyyy').format(DateTime.now());
     String d = Provider.of<Controller>(context, listen: false).defbrnch;
     print("jhgfdstrtyuijkkltttttttttttttttttttt>>>>$d");
     WidgetsBinding.instance?.addPostFrameCallback((_) {
@@ -97,10 +97,9 @@ Provider.of<Controller>(context, listen: false)
                               pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
                           formattedDate =
                               DateFormat('dd-MM-yyyy').format(pickedDate);
-                          print(
-                              formattedDate); //formatted date output using intl package =>  2021-03-16
+                          print(formattedDate); //formatted date output using intl package =>  2021-03-16
                           setState(() {
-                            dateInput.text = formattedDate;
+                            dateInput.text = DateFormat('MM-yyyy').format(pickedDate);
                             Provider.of<Controller>(context, listen: false)
                                 .getDamageProductionReport(
                                     context,
