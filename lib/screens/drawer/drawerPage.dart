@@ -1,5 +1,6 @@
 import 'package:bakestory_report/PROVIDER/providerDemo.dart';
 import 'package:bakestory_report/controller/controller.dart';
+import 'package:bakestory_report/screens/REPORTS/m_damage.dart';
 import 'package:bakestory_report/screens/REPORTS/m_report.dart';
 import 'package:bakestory_report/screens/REPORTS/daily_prod.dart';
 import 'package:bakestory_report/screens/REPORTS/damage_prod.dart';
@@ -36,16 +37,23 @@ List<DrawerlistClass> drawer_list = [
       ),
       menuindex: 1),
   DrawerlistClass(
-      title: "Damage Production Report",
+      title: "Monthly Production Report",
+      icon: Image.asset(
+        "assets/leave.png",
+        color: Colors.black54,
+      ),
+      menuindex: 2),
+  DrawerlistClass(
+      title: "Daily Damage Report",
       icon: Image.asset(
         "assets/dam.png",
         color: Colors.black54,
       ),
       menuindex: 2),
   DrawerlistClass(
-      title: "Monthly Report",
+      title: "Monthly Damage Report",
       icon: Image.asset(
-        "assets/calendar.png",
+        "assets/dam.png",
         color: Colors.black54,
       ),
       menuindex: 2),
@@ -57,13 +65,13 @@ List<DrawerlistClass> drawer_list = [
       ),
       menuindex: 2),
   DrawerlistClass(
-      title: "Monthly Production Report",
+      title: "Monthly Report",
       icon: Image.asset(
-        "assets/leave.png",
+        "assets/calendar.png",
         color: Colors.black54,
       ),
       menuindex: 2),
-       DrawerlistClass(
+  DrawerlistClass(
       title: "Logout",
       icon: Image.asset(
         "assets/leave.png",
@@ -136,10 +144,18 @@ class _DrawerPageState extends State<DrawerPage> {
                                     drawer_list[index].title,
                                     style: GoogleFonts.ptSerif(),
                                   ),
-                                  trailing: SizedBox(
-                                      height: 35,
-                                      width: 40,
-                                      child: drawer_list[index].icon),
+                                  leading: index > 6
+                                      ? Image.asset(
+                                          "assets/leave.png",
+                                          color: Colors.black54,height: 30,width: 25,
+                                        )
+                                      : SizedBox(
+                                        height: 25,width: 25,
+                                        child: Icon(Icons.circle,color:Colors.black54 ,size: 10,)),
+                                  // trailing: SizedBox(
+                                  //     height: 35,
+                                  //     width: 40,
+                                  //     child: drawer_list[index].icon),
                                 ),
                                 onTap: () {
                                   setState(() {
@@ -154,35 +170,42 @@ class _DrawerPageState extends State<DrawerPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => DailyProduct()),
+                                            builder: (context) =>
+                                                DailyProduct()),
                                       );
                                     } else if (i == 2) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => DamageProd()),
+                                            builder: (context) => Report()),
                                       );
                                     } else if (i == 3) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => MonthlyPro()),
+                                            builder: (context) => DamageProd()),
                                       );
                                     } else if (i == 4) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => EmployReport()),
+                                            builder: (context) =>
+                                                MonthlyDamage()),
                                       );
-                                    } 
-                                    else if (i == 5) {
-                                       Navigator.push(
+                                    } else if (i == 5) {
+                                      Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => Report()),
+                                            builder: (context) =>
+                                                EmployReport()),
                                       );
-                                    }
-                                    else{
+                                    } else if (i == 6) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => MonthlyPro()),
+                                      );
+                                    } else {
                                       Navigator.of(context).pushAndRemoveUntil(
                                         MaterialPageRoute(
                                           builder: (BuildContext context) =>

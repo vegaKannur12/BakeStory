@@ -28,6 +28,7 @@ class _EmployReportState extends State<EmployReport> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return MyScaffold(
         hasDrawer: true,
         scBgColor: const Color.fromARGB(255, 250, 223, 205),

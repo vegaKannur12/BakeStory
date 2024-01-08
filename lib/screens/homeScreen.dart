@@ -31,7 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
     dateInput.text = datetoday;
     Provider.of<Controller>(context, listen: false)
         .getBranch(context, datetoday);
-
+    Provider.of<Controller>(context, listen: false)
+        .getDashboard(context, datetoday, "1");
     super.initState();
   }
 
@@ -77,8 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
                             formattedDate =
                                 DateFormat('dd-MM-yyyy').format(pickedDate);
-                            print(
-                                formattedDate); //formatted date output using intl package =>  2021-03-16
+                            print(formattedDate); //formatted date output using intl package =>  2021-03-16
                             setState(() async {
                               dateInput.text = formattedDate;
                               print(value.selectedBranch["CID"].toString());
@@ -89,14 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               //set output date to TextField value.
                             });
-                          } else {}
-                        },
-                        // onChanged: (formattedDate) {
+                          } 
+                          else 
+                          {
 
-                        //   setState(() async {
-
-                        //     });
-                        // },
+                          }
+                        },                        
                       ),
                     ),
                   ),
@@ -191,11 +189,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 shrinkWrap: true,
                 itemCount: value.graphlistdash.length,
                 itemBuilder: (BuildContext context, int index) {
-                  if (double.parse(value.graphlistdash[index]["nos"]) > 100) {
-                    per =
-                        (double.parse(value.graphlistdash[index]["nos"])) / 100;
+                  if (double.parse(
+                          value.graphlistdash[index]["nos"].toString()) >
+                      100) {
+                    per = (double.parse(
+                            value.graphlistdash[index]["nos"].toString())) /
+                        100;
                   } else {
-                    per = double.parse(value.graphlistdash[index]["nos"]);
+                    per = double.parse(
+                        value.graphlistdash[index]["nos"].toString());
                   }
                   print(
                       "jbhjjghjgfgdffgsfgs ${value.graphlistdash[index]["nos"].runtimeType}");
@@ -220,9 +222,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               foregroundColor: Colors.indigo,
                               value: per,
                               foregroundLabel: Center(
-                                  child: Text("${per.toString()} %",
-                                      // value.graphlistdash[index]["nos"]
-                                      //     .toString(),
+                                  child: Text(
+                                      value.graphlistdash[index]["nos"]
+                                          .toString(),
                                       style: GoogleFonts.ptSerif(
                                           fontSize: 10,
                                           color: Colors.white,
@@ -230,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               max: 100,
                             )),
                         Text(
-                          "Quantity : ${value.graphlistdash[index]["nos"]}",
+                          "Quantity : ${value.graphlistdash[index]["nos"].toString()}",
                           style: GoogleFonts.ptSerif(
                               color: Colors.black, fontSize: 15),
                         ),

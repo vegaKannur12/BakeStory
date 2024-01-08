@@ -24,8 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController unamecontroller = TextEditingController();
   TextEditingController pwdcontroller = TextEditingController();
-
-  String? _username, _password;
   late LoginRequestModel loginRequestModel;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
@@ -37,35 +35,35 @@ class _LoginScreenState extends State<LoginScreen> {
   ValueNotifier<String> unm = ValueNotifier("");
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: true,
-      body: Align(
-        alignment: Alignment.bottomCenter,
-        child: SingleChildScrollView(
-          child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: SingleChildScrollView(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center,
             // mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 270,width: 170,
-                child: Image.asset("assets/key.png",color: Colors.black54,)),
+              SizedBox(height: 400,width: 200,
+                child: Image.asset("assets/lo.png",)),
               _buildForm()],
           ),
         ),
-      ),
     );
   }
+
   Widget _buildForm() {
     return FormContainer(
       child: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min, 
-        children: [
-          TextFormField(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          TextFormField(cursorColor:Colors.black ,
             decoration: InputDecoration(
               labelText: 'Username',
+              floatingLabelStyle: TextStyle(color: Colors.blue),
               prefixIcon: const Icon(Icons.person),
+                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
             ),
+           
             validator: (text) {
               if (text == null || text.isEmpty) {
                 return 'Please Enter Username';
@@ -78,19 +76,24 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(
             height: 20,
           ),
-          TextFormField(
+          TextFormField(cursorColor:Colors.black ,
             decoration: InputDecoration(
-              labelText: 'Password',
-              prefixIcon: const Icon(Icons.lock),
-              suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      hidePassword = !hidePassword;
-                    });
-                  },
-                  icon: Icon(
-                      hidePassword ? Icons.visibility : Icons.visibility_off)),
-            ),
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                labelText: 'Password',
+                floatingLabelStyle: TextStyle(color: Colors.blue),
+                prefixIcon: const Icon(Icons.lock),
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        hidePassword = !hidePassword;
+                      });
+                    },
+                    icon: Icon(hidePassword
+                        ?  Icons.visibility_off
+                        :Icons.visibility)),
+                    
+                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black))),
             validator: (text) {
               if (text == null || text.isEmpty) {
                 return 'Please Enter Password';
@@ -108,26 +111,36 @@ class _LoginScreenState extends State<LoginScreen> {
             // valueListenable: null,
             builder: (BuildContext context, value, Widget? child) {
               return InkWell(
-                  onTap: () async {
-                    unm.value = unamecontroller.text;
-                    //   _askingPhonePermission();
-                    //  String imeiNo = await DeviceInformation.deviceIMEINumber;
-                    //  print("iimei................$imeiNo");
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    if (_formKey.currentState!.validate()) {
-                      Provider.of<Controller>(context, listen: false).getLogin(
-                          unamecontroller.text, pwdcontroller.text, context);
-                      Provider.of<ProviderDemo>(context, listen: false)
-                          .changevalue(unamecontroller.text);
-                    }
-                  },
-                  child:SizedBox(height: 30,width: 90,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                   
-                      children: [Text("LOGIN",style: GoogleFonts.ptSerif(color: Colors.blue,fontWeight: FontWeight.bold,fontSize: 17,),),
-                        Image.asset("assets/log-in.png",height: 20,width: 20,),
-                      ],
-                    )),);
+                onTap: () async {
+                  unm.value = unamecontroller.text;
+                  //   _askingPhonePermission();
+                  //  String imeiNo = await DeviceInformation.deviceIMEINumber;
+                  //  print("iimei................$imeiNo");
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  if (_formKey.currentState!.validate()) {
+                    Provider.of<Controller>(context, listen: false).getLogin(
+                        unamecontroller.text, pwdcontroller.text, context);
+                    Provider.of<ProviderDemo>(context, listen: false)
+                        .changevalue(unamecontroller.text);
+                  }
+                },
+                child: Container(
+                    height: 45,
+                    width: 90,decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(20)),
+                    child: 
+                        Center(
+                          child: Text(
+                            "LOGIN",
+                            style: GoogleFonts.ptSerif(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                        
+                    ),
+              );
             },
             valueListenable: unm,
           ),

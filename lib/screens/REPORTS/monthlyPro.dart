@@ -23,8 +23,14 @@ class _MonthlyProState extends State<MonthlyPro> {
   void initState() {
     String datetoday = DateFormat('dd-MM-yyyy').format(DateTime.now());
     dateInput.text = datetoday;
-    Provider.of<Controller>(context, listen: false)
-        .getBranch(context, datetoday);
+    String d = Provider.of<Controller>(context, listen: false).defbrnch;
+    print("jhgfdstrtyuijkkltttttttttttttttttttt>>>>$d");
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Provider.of<Controller>(context, listen: false)
+          .getBranch(context, datetoday);
+      Provider.of<Controller>(context, listen: false)
+          .getProlossReport(context, datetoday, d);
+    });
     super.initState();
   }
 
@@ -32,6 +38,7 @@ class _MonthlyProState extends State<MonthlyPro> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return MyScaffold(
         hasDrawer: true,
         scBgColor: const Color.fromARGB(255, 250, 223, 205),
@@ -71,8 +78,7 @@ class _MonthlyProState extends State<MonthlyPro> {
                                 locale: const Locale('en', 'US'));
 
                             if (pickedDate != null) {
-                              print(
-                                  pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                              print(pickedDate);
                               formattedDate =
                                   DateFormat('yyyy-MM-dd').format(pickedDate);
                               print(

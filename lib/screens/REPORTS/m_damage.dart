@@ -7,14 +7,14 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-class DamageProd extends StatefulWidget {
-  const DamageProd({super.key});
+class MonthlyDamage extends StatefulWidget {
+  const MonthlyDamage({super.key});
 
   @override
-  State<DamageProd> createState() => _DamageProdState();
+  State<MonthlyDamage> createState() => _MonthlyDamageState();
 }
 
-class _DamageProdState extends State<DamageProd> {
+class _MonthlyDamageState extends State<MonthlyDamage> {
   TextEditingController dateInput = TextEditingController();
   String formattedDate = "";
   double gtot = 0.0;
@@ -35,7 +35,7 @@ Provider.of<Controller>(context, listen: false)
                                   context,
                                   datetoday,
                                   d,
-                                  0,
+                                  1,
                                   "1");
     });
     super.initState();
@@ -106,7 +106,7 @@ Provider.of<Controller>(context, listen: false)
                                     context,
                                     formattedDate,
                                     value.selectedBranch["CID"].toString(),
-                                    0,
+                                    1,
                                     value.selectedCategory["cat_id"]
                                         .toString());
                             // Provider.of<Controller>(context, listen: false)
@@ -154,7 +154,7 @@ Provider.of<Controller>(context, listen: false)
                                   context,
                                   formattedDate,
                                   value.selectedBranch["CID"].toString(),
-                                  0,
+                                  1,
                                   value.selectedCategory["cat_id"].toString());
                         });
                         print("cidddddddddd===============>>>>${cid}");
@@ -205,7 +205,7 @@ Provider.of<Controller>(context, listen: false)
                                   context,
                                   formattedDate,
                                   value.selectedBranch["CID"].toString(),
-                                  0,
+                                  1,
                                   value.selectedCategory["cat_id"].toString());
                           print(
                               "selected this cat----->>>>>>>>>>>>>>>>${value.selectedCategory["cat_id"]}");
@@ -436,7 +436,7 @@ Provider.of<Controller>(context, listen: false)
           ],
         ),
       ),
-      title: 'Damage Products',
+      title: 'Monthly Damage',
     );
   }
 

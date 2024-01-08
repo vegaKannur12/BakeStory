@@ -52,7 +52,7 @@ main() async {
       ChangeNotifierProvider(create: (_) => Controller()),
       ChangeNotifierProvider(create: (context) => ProviderDemo())
     ],
-    child:const MyApp(),
+    child: const MyApp(),
   ));
 }
 
@@ -72,23 +72,20 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primaryColor: P_Settings.purple,
         fontFamily: GoogleFonts.aBeeZee().fontFamily,
-        scrollbarTheme:const ScrollbarThemeData().copyWith(
-          thumbColor:const MaterialStatePropertyAll(Colors.black45),
-        minThumbLength: 0.1),
+        scrollbarTheme: const ScrollbarThemeData().copyWith(
+            thumbColor: const MaterialStatePropertyAll(Colors.black45),
+            minThumbLength: 0.1),
       ),
       debugShowCheckedModeBanner: false,
-
       home:
           // MyApp(),
           // EmployReport(),
           // MonthlyPro(),
           //  DamageProd(),
           // DailyProduct(),
-          //  SplashScreen(),
+          // SplashScreen(),
           // RegisterScreen(),
-         const HomeScreen(),
-      //  BarChartSample3(),
-
+       const HomeScreen(),
       localizationsDelegates: const [
         GlobalWidgetsLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

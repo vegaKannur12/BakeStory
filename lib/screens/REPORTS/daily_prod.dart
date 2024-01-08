@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+
 import 'package:provider/provider.dart';
 
 class DailyProduct extends StatefulWidget {
@@ -22,9 +23,15 @@ class _DailyProductState extends State<DailyProduct> {
   void initState() {
     grndtotRow = false;
     String datetoday = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    dateInput.text = datetoday; //set the initial value of text field
-    Provider.of<Controller>(context, listen: false)
-        .getBranch(context, datetoday);
+    dateInput.text = datetoday;
+    String d = Provider.of<Controller>(context, listen: false).defbrnch;
+    print("jhgfdstrtyuijkkltttttttttttttttttttt>>>>$d");
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Provider.of<Controller>(context, listen: false)
+          .getBranch(context, datetoday);
+      Provider.of<Controller>(context, listen: false)
+          .getDailyProductionReport(context, datetoday, d);
+    });
     super.initState();
     Provider.of<Controller>(context, listen: false).getCategoryList(context);
     Provider.of<Controller>(context, listen: false)
@@ -33,6 +40,7 @@ class _DailyProductState extends State<DailyProduct> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return MyScaffold(
       hasDrawer: true,
       scBgColor: const Color.fromARGB(255, 250, 223, 205),
@@ -386,6 +394,7 @@ class _DailyProductState extends State<DailyProduct> {
               height: 5,
             ),
             //  value.isProdLoding &&
+            
             value.grandtot == 0.0 || value.isProdLoding
                 ? Container()
                 : Container(
@@ -418,3 +427,6 @@ class _DailyProductState extends State<DailyProduct> {
     );
   }
 }
+
+
+
